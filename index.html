@@ -1,11 +1,174 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Privacy and terms for Soundtrail, the Android app that connects music to places."><title>Soundtrail · Privacy & terms</title><link rel="icon" type="image/svg+xml" href="assets/soundtrail-logo.svg"><link rel="stylesheet" href="assets/styles.css"></head>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Soundtrail is a free, open-source Android app that saves songs as private, location-based pins on your own map, with local playlists, offline audio, opt-in place/motion/time automations, and optional end-to-end encrypted sync you can self-host. MIT licensed.">
+<title>Soundtrail · Music for the places you love</title>
+<link rel="canonical" href="https://egrie-tech.github.io/">
+<link rel="icon" type="image/svg+xml" href="assets/soundtrail-logo.svg">
+<meta name="color-scheme" content="light dark">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Soundtrail">
+<meta property="og:title" content="Soundtrail · Music for the places you love">
+<meta property="og:description" content="Open-source Android app: location-based music pins, local playlists, offline audio, opt-in automations, and optional self-hostable end-to-end encrypted sync. No ads, no analytics SDK. MIT licensed.">
+<meta property="og:url" content="https://egrie-tech.github.io/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:description" content="Location-based music pins on your own map, local-first, MIT licensed, self-hostable sync.">
+<link rel="alternate" type="application/rss+xml" title="Soundtrail releases" href="https://github.com/mob5824m-wq/SoundTrail/releases.atom">
+<link rel="stylesheet" href="assets/styles.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"MobileApplication","name":"Soundtrail","operatingSystem":"Android 8.0 (API 26) or newer","applicationCategory":"MusicApplication","softwareVersion":"1.0.8","url":"https://egrie-tech.github.io/","codeRepository":"https://github.com/mob5824m-wq/SoundTrail","license":"https://github.com/mob5824m-wq/SoundTrail/blob/main/LICENSE","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"CAD"},"featureList":["Location-based music pins on an in-app map","Local playlists with offline audio management","Opt-in place, motion, and time automations","Spotify, SoundCloud, Jellyfin, and YouTube connections","End-to-end encrypted cloud sync, self-hostable","Portable JSON export and import"],"publisher":{"@type":"Person","name":"Everett Grieve","alternateName":"egrie-tech"}},{"@type":"WebSite","name":"Soundtrail by egrie-tech","url":"https://egrie-tech.github.io/","inLanguage":"en","publisher":{"@type":"Person","name":"Everett Grieve","alternateName":"egrie-tech"}}]}
+</script>
+</head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<header><a class="brand" href="./"><img class="brand-mark" src="assets/soundtrail-logo.svg" alt="" aria-hidden="true" width="36" height="36"><span>Soundtrail<span class="brand-dot">.</span></span></a><nav aria-label="Main navigation"><a href="privacy/">Privacy</a><a href="terms/">Terms</a><a href="https://github.com/egrie-tech/Geotagged-Music-App">Source ↗</a></nav></header>
+<header><a class="brand" href="./"><img class="brand-mark" src="assets/soundtrail-logo.svg" alt="" aria-hidden="true" width="36" height="36"><span>Soundtrail<span class="brand-dot">.</span></span></a><nav aria-label="Main navigation"><a href="#features">Features</a><a href="#data">Your data</a><a href="#recent">Recent</a><a href="self-host/">Self-host</a><a href="privacy/">Privacy</a><a href="terms/">Terms</a><a class="gh" href="https://github.com/mob5824m-wq/SoundTrail">GitHub ↗</a></nav></header>
 <main id="main">
-<div class="hero"><div class="eyebrow">Music for the places you love</div><h1>Your music. Your places.<br>Your choices.</h1><p class="intro">Understand how Soundtrail handles your information, and the terms for using its location-based music features.</p></div>
-<div class="cards"><a class="card" href="privacy/"><span class="number">01 / YOUR INFORMATION</span><h2>Privacy Policy</h2><p>Local storage, location permissions, optional service connections, encrypted sync, and your deletion choices.</p><span class="link">Read the privacy policy →</span></a><a class="card" href="terms/"><span class="number">02 / USING SOUNDTRAIL</span><h2>Terms of Service</h2><p>Responsible use, music permissions, third-party services, backups, and open-source licensing.</p><span class="link">Read the terms →</span></a></div>
-</main><footer><span>Soundtrail · by egrie-tech</span><span>Ontario, Canada · <a href="mailto:mob5824@proton.me">Contact</a></span></footer>
-</body></html>
+
+<div class="hero wide">
+<div class="eyebrow">Open source · Android · local-first</div>
+<h1>Your music, pinned to<br>the places you love.</h1>
+<p class="intro">Soundtrail saves Spotify, SoundCloud, YouTube Music, and Jellyfin songs as private pins on your own map — with local playlists, offline audio, opt-in place/motion/time automations, and end-to-end encrypted sync you can self-host. Everything stays on your device unless you turn a sync or provider connection on.</p>
+<div class="cta-row">
+<a class="btn btn-primary" href="https://github.com/mob5824m-wq/SoundTrail">View the source on GitHub ↗</a>
+<a class="btn btn-ghost" href="https://github.com/mob5824m-wq/SoundTrail/releases">Releases &amp; tags ↗</a>
+<a class="btn btn-ghost" href="#data">How your data is handled</a>
+</div>
+<ul class="facts">
+<li>MIT licensed · © egrie-tech</li>
+<li>Android 8.0+ (API 26)</li>
+<li>No ads, no advertising ID</li>
+<li>No analytics or crash SDK</li>
+<li>No Play Store account needed</li>
+<li>Reviewed at v1.0.8 · Oct 13, 2026</li>
+</ul>
+</div>
+
+<div class="notice"><strong>The repository moved.</strong> Active development is now at <a href="https://github.com/mob5824m-wq/SoundTrail"><code>mob5824m-wq/SoundTrail</code></a> — file issues, read the source, and (once Releases are published there) get prebuilt APKs from that repository. The previous repository, <code>egrie-tech/Geotagged-Music-App</code>, carries the same history up to <code>22d906f</code> and still holds the <code>v1.0.1</code>–<code>v1.0.8</code> release assets, and the app package name is unchanged (<code>tech.egrie.soundtrail</code>). Version numbers here were checked against the new repository's <code>main</code> branch on October 13, 2026.</div>
+
+<section class="section" id="features">
+<div class="section-head"><div class="eyebrow">Features</div><h2>What the app does</h2><p>Each feature below is opt-in except the local library. Nothing described here requires an account or a server.</p></div>
+<div class="grid grid-3">
+<div class="tile"><span class="kicker">Map</span><h3>Pins on your own map</h3><p>An in-app OpenStreetMap-based map draws every pin in its provider colour. Tap for the song card, long-press anywhere to drop a new pin, and switch List ↔ Map at any time.</p></div>
+<div class="tile"><span class="kicker">Providers</span><h3>Your existing music, not a new store</h3><p>Search Spotify, SoundCloud, your Jellyfin server, or your own YouTube playlists, or paste a supported link. The free TheAudioDB lookup fills in artist, title, album, and a link with no account at all.</p></div>
+<div class="tile"><span class="kicker">Playback</span><h3>In-app player with device controls</h3><p>Jellyfin streams, your imported files, Spotify previews, SoundCloud streams, and downloaded YouTube audio play in-app, with a notification and lockscreen/Bluetooth controls. Full-length Spotify tracks still open in Spotify's own app.</p></div>
+<div class="tile"><span class="kicker">Offline</span><h3>Audio you can keep</h3><p>Attach an audio file you already own, or download an eligible Jellyfin track through its authenticated endpoint (250 MiB per track). Offline storage is yours to audit: per-file sizes, largest first, remove one or clear all.</p></div>
+<div class="tile"><span class="kicker">Automations</span><h3>Playlists that notice where you are</h3><p>Point a playlist at conditions: near a saved spot (20–2000 m), while walking, running, or driving, and/or between two times of day. An opt-in foreground watch posts a notification when a rule matches — it never plays audio without a tap.</p></div>
+<div class="tile"><span class="kicker">Sync</span><h3>Encrypted, and yours to host</h3><p>Optional two-way sync of pins, playlists, links, and automations, encrypted on-device with AES-256-GCM under a recovery key only you hold. The public server works out of the box; a <a href="self-host/">self-hosted server</a> takes one URL change.</p></div>
+<div class="tile"><span class="kicker">Portability</span><h3>Plain-JSON backup</h3><p>Export pins, coordinates, notes, playlists, song links, and automation rules to a JSON file you choose; import merges them back additively. No proprietary cloud format, no lock-in.</p></div>
+<div class="tile"><span class="kicker">Sharing</span><h3>Share-back from your music app</h3><p>Share a song from Spotify, YouTube Music (including Morphe), or SoundCloud into Soundtrail and the pin editor opens prefilled. Soundtrail never reads another app's storage or session.</p></div>
+<div class="tile"><span class="kicker">Under the hood</span><h3>No Google services required</h3><p>Motion is estimated from GPS speed rather than an activity-recognition API, browser-based YouTube OAuth works without Play services, and the whole local library functions with the network switched off.</p></div>
+</div>
+</section>
+
+<section class="section" id="data">
+<div class="two-col">
+<div>
+<div class="eyebrow">Your data</div>
+<h2>Two directions, and you control each one</h2>
+<p class="intro">The local library is the default and the whole product. The two optional paths that move information — provider connections and cloud sync — are separate switches with different data flows.</p>
+<h3>Stays on the device</h3>
+<ul><li>Pins, titles, artists, notes, coordinates, place labels, and creation times.</li><li>Playlists, imported audio, and downloaded offline files, in private app storage.</li><li>Automation rules, the live watch state, and provider tokens (Android Keystore-encrypted).</li><li>Search matching against your YouTube playlists, which happens on-device.</li></ul>
+<h3>Leaves the device only when you enable it</h3>
+<ul><li><strong>Provider search/playback:</strong> your query, track IDs, and ordinary request metadata reach Spotify, SoundCloud, TheAudioDB, Google's YouTube Data API, or your Jellyfin server.</li><li><strong>Cloud sync:</strong> encrypted library records reach the server you selected; your recovery key and audio files never do.</li><li><strong>Map tiles:</strong> the visible area reaches the tile server, because tiles are fetched for the area you look at.</li><li><strong>Exports:</strong> a readable JSON file goes wherever you save it.</li></ul>
+<p>The exact wording we are held to is in the <a href="privacy/">Privacy Policy</a> and the <a href="terms/">Terms of Service</a>. Both were re-checked against <code>v1.0.8</code> source, not against marketing copy.</p>
+</div>
+<svg class="hero-art" viewBox="0 0 520 420" role="img" aria-label="Diagram: a phone holding the local library, with two optional paths — encrypted sync to a server you host, and provider requests to music services — plus a readable JSON export that goes wherever you save it." aria-hidden="false" focusable="false">
+<defs><style>.lb{font:600 13px system-ui,sans-serif;fill:var(--ink)}.lm{font:400 11px system-ui,sans-serif;fill:var(--muted)}.bd{fill:none;stroke:var(--line);stroke-width:1.5}.op{fill:none;stroke:var(--accent);stroke-width:1.5;stroke-dasharray:5 4}.pk{fill:var(--paper)}</style></defs>
+<rect x="20" y="30" width="176" height="250" rx="18" class="bd"/>
+<rect x="36" y="52" width="144" height="192" rx="8" class="pk" stroke="var(--line)"/>
+<text x="108" y="46" text-anchor="middle" class="lb">Your device</text>
+<circle cx="70" cy="86" r="9" fill="var(--accent)"/>
+<text x="86" y="90" class="lm">pins + coordinates</text>
+<circle cx="70" cy="116" r="9" fill="var(--focus)"/>
+<text x="86" y="120" class="lm">playlists + offline audio</text>
+<circle cx="70" cy="146" r="9" fill="var(--accent)"/>
+<text x="86" y="150" class="lm">automation rules</text>
+<text x="36" y="184" class="lm">private app storage</text>
+<text x="36" y="202" class="lm">Keystore-encrypted tokens</text>
+<text x="36" y="228" class="lb">Local by default</text>
+<path d="M196 120H300" class="op"/>
+<path d="M196 210H300" class="op"/>
+<path d="M300 120v90" class="op"/>
+<path d="M300 165l-14-9v18z" fill="var(--accent)"/>
+<rect x="316" y="86" width="184" height="96" rx="12" class="bd"/>
+<text x="332" y="112" class="lb">Sync server (optional)</text>
+<text x="332" y="132" class="lm">AES-256-GCM ciphertext,</text>
+<text x="332" y="148" class="lm">account email, sessions,</text>
+<text x="332" y="164" class="lm">sizes and timing only</text>
+<rect x="316" y="200" width="184" height="96" rx="12" class="bd"/>
+<text x="332" y="226" class="lb">Music providers</text>
+<text x="332" y="246" class="lm">Spotify · SoundCloud ·</text>
+<text x="332" y="262" class="lm">Jellyfin · YouTube API ·</text>
+<text x="332" y="278" class="lm">CARTO tiles, on request</text>
+<rect x="20" y="316" width="480" height="72" rx="12" class="bd"/>
+<text x="36" y="344" class="lb">JSON export — a file you place, unencrypted</text>
+<text x="36" y="366" class="lm">Pins, notes, links, playlists, automations travel with it; logins and audio bytes do not. Encrypted sync and plain JSON are two separate mechanisms.</text>
+<path d="M108 280v36" class="op"/>
+</svg>
+</div>
+</section>
+
+<section class="section" id="connect">
+<div class="section-head"><div class="eyebrow">Connections</div><h2>What each connection sends, and gets</h2><p>Only connect a service if you want its features. Every request below also exposes your IP address and ordinary connection timing to that endpoint.</p></div>
+<div class="grid grid-2">
+<div class="tile"><h3>Spotify</h3><p>OAuth with PKCE, no client secret. Search text and track lookups go to <code>api.spotify.com</code>; the preview that plays in-app is the track's own <code>preview_url</code>. Tokens live in Keystore-encrypted storage. Full playback stays in Spotify's app.</p></div>
+<div class="tile"><h3>SoundCloud</h3><p>OAuth 2.1 with PKCE against <code>secure.soundcloud.com</code>; search and stream resolution against <code>api.soundcloud.com</code>. Your Client ID and the client secret are stored encrypted on-device. SoundCloud requires every API client to hold a secret, so you must register an API app.</p></div>
+<div class="tile"><h3>Jellyfin (your server)</h3><p>Your address, username, and password go to that server; it decides what you may search, stream, and download. The password is never stored; the access token travels in a header, Keystore-encrypted on-device. Library records keep <code>jellyfin:item:&lt;id&gt;</code> references — not URLs or tokens.</p></div>
+<div class="tile"><h3>YouTube / YouTube Music</h3><p>Optional read-only <code>youtube.readonly</code> access to your playlists, via a Google account or a Desktop OAuth Client ID you create yourself. Playlists import into your local library (bounded, on-device matching). YouTube Music handoff needs no OAuth at all.</p></div>
+<div class="tile"><h3>TheAudioDB</h3><p>The artist and title you type are sent to a free public API using its shared key; there is no account and nothing is stored about you. Results can fill a pin, and any link it offers passes the same allowlist as a pasted one.</p></div>
+<div class="tile"><h3>Maps and tiles</h3><p>Raster tiles for the visible area come from <code>basemaps.cartocdn.com</code>. The tile coordinates reveal the area you are looking at; your pin records, notes, and exact coordinates are drawn locally and are not part of a tile request.</p></div>
+</div>
+<div class="notice"><strong>One connection is not the other.</strong> Signing in to the sync server and connecting a music provider are independent choices. Turning on sync does not tell the server which artists you searched for, and connecting Spotify does not upload your library — see <a href="privacy/#sync">the sync section</a> of the Privacy Policy for exactly what the server can and cannot see.</div>
+</section>
+
+<section class="section" id="get">
+<div class="section-head"><div class="eyebrow">Get it</div><h2>Install Soundtrail</h2><p>There is no Play Store listing: this is a self-distributed, debug-signed build, which is also why anyone can audit and rebuild it.</p></div>
+<ol class="steps">
+<li><h3>Take the APK from a Release, or build it</h3><p>Every pull request merged into <code>main</code> bumps the patch version and publishes a GitHub Release with <code>soundtrail-&lt;version&gt;-debug.apk</code> attached. Grab it from <a href="https://github.com/mob5824m-wq/SoundTrail/releases">Releases</a> — or build the same source yourself:</p><pre><code>git clone https://github.com/mob5824m-wq/SoundTrail.git
+cd SoundTrail
+./gradlew :app:assembleDebug</code></pre></li>
+<li><h3>Install it</h3><p>Sideload the APK directly, or with <code>adb install soundtrail-1.0.8-debug.apk</code>. Android 8.0 or newer is required. Grant location only if you want pins at your position — you can type coordinates instead.</p></li>
+<li><h3>Expect one clean install if you came from an old build</h3><p>APKs built before the shared <code>keystore/soundtrail-debug.p12</code> key were signed with a throwaway per-machine key, so they cannot be updated in place. Uninstall once, then install; the uninstall deletes local app data, so export a JSON backup and have your recovery key saved first. Everything built from this repository since then installs over the previous version.</p></li>
+<li><h3>Optionally, point sync at your own server</h3><p>A fresh install connects to the public sync server (<code>https://soundtrail.duckdns.org</code>) for account creation and encrypted sync. The <a href="self-host/">self-host guide</a> covers a native Python setup behind HTTPS, its limits, and what to back up.</p></li>
+<li><h3>Save the recovery key before you rely on sync</h3><p>The app generates a random 256-bit key when you create an account. Nothing else can decrypt your library afterwards: the server has no key-recovery service, and a password reset does not recover encrypted content.</p></li>
+</ol>
+<div class="notice"><strong>Debug signing is deliberate.</strong> The published APKs are signed with the conventional public Android debug key committed in the repository, and no release signing is configured. That makes updates install in place, and it means these builds are meant for sideloading — they are not a hardened Play Store release and should not be treated as one.</div>
+</section>
+
+<section class="section" id="faq">
+<div class="section-head"><div class="eyebrow">FAQ</div><h2>Questions people actually ask</h2></div>
+<details><summary>Does the server ever see my pins, notes, or coordinates?</summary><p>Not in plaintext. Each pin, playlist, playlist song, and automation is encrypted on your device before upload; the server stores opaque ciphertext envelopes plus sequence metadata, so it can see sizes, counts, and timing — not contents or your recovery key. Your account email, IP address, and traffic metadata are not hidden by end-to-end encryption, and the host or reverse proxy may log them. Locally stored audio and provider tokens are excluded from sync entirely.</p></details>
+<details><summary>Can I use Soundtrail with no account at all?</summary><p>Yes. Dropping pins, building playlists, attaching audio, exporting JSON, and running automations are all local. An account is only needed for sync and for the optional YouTube audio-extraction endpoint, and both have a local alternative (JSON export, and attaching files you already own).</p></details>
+<details><summary>What happens if I lose the recovery key?</summary><p>Encrypted server-side data becomes unreadable, on this and any future device. The key can be revealed again on a device that is already signed in, but a new device needs the key itself, and uninstalling removes that device's stored copy. There is no reset path, by design: a server that could hand back your key could also read your library.</p></details>
+<details><summary>Why is my automation late, or why did it not fire?</summary><p>Motion is inferred from GPS speed bands (stationary under 0.5 m/s, walking to about 2.6 m/s, running to 7.5 m/s, driving above that), so tunnels, indoor use, and poor fixes delay or miss triggers. Rules re-arm on a 15-minute cooldown rather than edge triggering, so a rule can fire again while conditions still hold. Continuous GPS also uses noticeably more battery, which is why the watch only runs while its toggle is on and its notification is visible.</p></details>
+<details><summary>Is my JSON export encrypted?</summary><p>No, and that is the point of it being portable. An export is readable JSON containing pins, coordinates, notes, playlists, song links, and automation rules — no login credentials, no audio bytes. Protect the file and delete copies you do not need. Encrypted sync and JSON export are separate mechanisms with different guarantees.</p></details>
+<details><summary>Does Soundtrail show ads, sell data, or track me?</summary><p>There is no advertising ID, no ad SDK, no general analytics SDK, and no crash reporter in the app; the only third-party SDK in the dependency list is Google's sign-in library, used for the optional YouTube connection. Your library is not sold or used for advertising. Google processes sign-in activity under its own policy, and Soundtrail's use of Google API data follows the Google API Services User Data Policy, including Limited Use.</p></details>
+<details><summary>Can it download any song I want?</summary><p>No. Jellyfin downloads go through your own server's authenticated endpoint and obey that account's permissions. The optional YouTube extractor is unofficial, uses no cookies or login session, and only attempts a publicly accessible audio stream — private, age-restricted, gated, or DRM-protected items fail. Both paths are capped at 250 MiB per track, and you must confirm you own the content or may download it before the request is sent.</p></details>
+<details><summary>Why is it not on the Play Store, and is it safe to sideload?</summary><p>A Play release needs a private signing key and a review process the project has deliberately not set up. Sideload only from the repository's Releases, check that the version matches the tag you read, and remember that a debug-signed build is still a debug build: useful, auditable, and open to modification by anyone who has the source.</p></details>
+</section>
+
+<section class="section" id="recent">
+<div class="section-head"><div class="eyebrow">Recent changes</div><h2>What moved most recently</h2><p>Written against <code>main</code> at <a href="https://github.com/mob5824m-wq/SoundTrail/commit/22d906f8ed2a939adce7c823beab2fe48f1f6346"><code>22d906f</code></a> on October 13, 2026, just after <code>v1.0.8</code>. Every merged pull request bumps the patch version and publishes a Release, so check <a href="https://github.com/mob5824m-wq/SoundTrail/commits/main">the commit list</a> for anything newer.</p></div>
+<div class="grid grid-2">
+<div class="tile"><span class="kicker">Playback</span><h3>One player for every source</h3><p>Jellyfin streams, your own files, Spotify previews, SoundCloud streams, and extracted YouTube audio now play inside the app under a media-playback notification, instead of handing every tap to another app. YouTube and YouTube Music were also split back into separate providers so “liked” collections stop mixing.</p></div>
+<div class="tile"><span class="kicker">Sync</span><h3>Working without setup</h3><p>The app now ships pointed at the public sync server, with a <strong>Use public server</strong> reset beside the URL field, and YouTube playlists import automatically once you connect — bounded, on-device matched, and switchable off in Connect.</p></div>
+<div class="tile"><span class="kicker">Self-hosting</span><h3>No Docker needed</h3><p>The sync server is plain Python started with <code>python3 run.py</code>, which builds its own virtualenv; it runs on Linux, macOS, Windows, and BSD on any CPU, defaults to loopback behind your TLS proxy, and ships a native test command. <a href="self-host/">Guide →</a></p></div>
+<div class="tile"><span class="kicker">Sign-in</span><h3>Google without Google services</h3><p>A Desktop OAuth Client ID path signs in through the browser with PKCE and no secret, so the optional YouTube connection works on MicroG RE and on devices with no Play services at all. A shared committed debug key also means each release APK installs over the last one.</p></div>
+</div>
+</section>
+
+<section class="section" id="legal">
+<div class="section-head"><div class="eyebrow">Legal</div><h2>Privacy &amp; terms, in plain documents</h2><p>This site exists to keep the policy text next to the software it describes, at URLs stable enough to link from the app and a store listing.</p></div>
+<div class="cards"><a class="card" href="privacy/"><span class="number">01 / YOUR INFORMATION</span><h2>Privacy Policy</h2><p>Local storage, location permissions, optional service connections, encrypted sync, and your deletion choices — with what each endpoint actually receives.</p><span class="link">Read the privacy policy →</span></a><a class="card" href="terms/"><span class="number">02 / USING SOUNDTRAIL</span><h2>Terms of Service</h2><p>Responsible use, music permissions, third-party services, backups, self-hosting, and how the MIT license interacts with these terms.</p><span class="link">Read the terms →</span></a></div>
+</section>
+
+</main>
+<footer>
+<span>Soundtrail · maintained by Everett Grieve (egrie-tech)</span>
+<span>Ontario, Canada · <a href="mailto:mob5824@proton.me">Contact</a> · <a href="https://github.com/mob5824m-wq/SoundTrail">Source ↗</a> · <a href="https://github.com/mob5824m-wq/SoundTrail/issues">Issues ↗</a></span>
+<span>This page loads no JavaScript, no third-party fonts, no cookies, and no analytics. Website hosting infrastructure may still keep request logs.</span>
+</footer>
+</body>
+</html>

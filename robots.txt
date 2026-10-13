@@ -1,0 +1,6 @@
+# Soundtrail project site. Crawling is welcome; there is nothing here to protect
+# and no scripts, APIs, or parameters to keep bots away from.
+User-agent: *
+Allow: /
+
+Sitemap: https://egrie-tech.github.io/sitemap.xml
