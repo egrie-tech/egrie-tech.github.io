@@ -49,6 +49,49 @@ If this repository uses its default GitHub Pages domain, the intended URLs are:
 - https://egrie-tech.github.io/privacy/
 - https://egrie-tech.github.io/terms/
 
+## Hosting notes
+
+This repository is published as a **user Pages site**: `Settings → Pages → Deploy from a branch`,
+branch `main`, folder `/`. It therefore serves at `https://egrie-tech.github.io/`, with no path
+prefix. The root `.nojekyll` file disables Jekyll processing so the HTML, CSS, and directories are
+published exactly as committed.
+
+### Changing or removing the custom domain
+
+A custom domain on a user site replaces the `<user>.github.io` hostname for **every** page on the
+account. Two things are easy to get wrong:
+
+1. **DNS must point at GitHub Pages.** For an apex domain use the four GitHub Pages `A` records
+   (`185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`); for a subdomain use
+   a `CNAME` to `egrie-tech.github.io`. A domain that resolves anywhere else (for example to a
+   self-hosted server) cannot be verified by GitHub, and the site can then fail to serve — GitHub
+   answers with its "Site not found" page for both the custom domain and the `github.io` URL.
+2. **Removing the domain needs a new deployment.** Deleting the domain in `Settings → Pages` (or
+   deleting the `CNAME` file, which sets the same value) does not always re-provision the default
+   `github.io` hostname on its own. Push a new commit to `main` to force a fresh Pages build, then
+   confirm `https://egrie-tech.github.io/privacy/` loads before treating the change as done.
+
+The `.nojekyll` file and all page links are relative, so the site also works unchanged under a
+custom domain or a path prefix once DNS and Pages settings agree.
+
+### When the site returns "Site not found"
+
+The published site, its Pages settings, and the build history are three separate things. Check them
+in this order:
+
+```sh
+python3 tests/check_site.py                      # content, links, and anchors are intact
+gh api repos/egrie-tech/egrie-tech.github.io/pages \
+  --jq '{status,cname,source,html_url,pending_domain_unverified_at}'
+gh api repos/egrie-tech/egrie-tech.github.io/pages/builds --jq '.[0] | {status,error,commit}'
+```
+
+A `PAGES/CNAME` value that is not `null` while the site should be on the default hostname means a
+custom domain is still configured. `pending_domain_unverified_at` set to a timestamp means GitHub
+could not verify the domain's DNS. If the settings are already clean and the newest build reports
+`built` with no error but the URL still 404s, the edge has not picked up the change: push a new
+commit to `main` (an empty commit is enough) and allow a few minutes for the deployment to finish.
+
 ## Preview and checks
 
 ```sh
