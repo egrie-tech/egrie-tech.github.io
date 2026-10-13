@@ -12,6 +12,7 @@ class Page(HTMLParser):
         super().__init__(convert_charrefs=True)
         self.ids = []
         self.links = []
+        self.images = []
         self.counts = {}
         self.feed(text)
 
@@ -22,6 +23,10 @@ class Page(HTMLParser):
             self.ids.append(attrs["id"])
         if tag in ("a", "link") and "href" in attrs:
             self.links.append(attrs["href"])
+        if tag == "img":
+            self.images.append(attrs)
+            if "src" in attrs:
+                self.links.append(attrs["src"])
 
 
 def check():
@@ -31,6 +36,9 @@ def check():
         label = path.relative_to(ROOT)
         assert page.counts.get("main") == 1, f"{label}: main landmark"
         assert page.counts.get("title") == 1, f"{label}: page title"
+        assert len(page.images) == 1, f"{label}: expected one site logo image"
+        assert page.images[0].get("alt") == "", f"{label}: decorative logo should not duplicate brand text"
+        assert "soundtrail-logo.svg" in page.images[0].get("src", ""), f"{label}: incorrect site logo"
         assert page.counts.get("script", 0) == 0, f"{label}: unexpected script"
         assert len(page.ids) == len(set(page.ids)), f"{label}: duplicate IDs"
         assert 'class="placeholder"' not in text, f"{label}: unresolved placeholder"
