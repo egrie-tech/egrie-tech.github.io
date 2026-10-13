@@ -57,6 +57,12 @@ The 1.0.8 review superseded four statements from the earlier 1.0.6 review, and t
   tokens, plus an expiry, in Keystore-encrypted storage — and playlist **auto-import is on by
   default** once connected, bounded at 200 playlists / 2,000 items, with search limited to the
   first 50 playlists × 50 items and matched on-device.
+- **Google services.** `GoogleSignIn.getClient` backs the Google-account path, so that option needs
+  Play services or a standard microG install under `com.google.android.gms`; `DeviceApps.systemGmsInstalled`
+  and `microGReInstalled` show why MicroG RE is explicitly not enough, and the Client ID path is the
+  no-Google-services route. The landing page therefore says "works on a de-Googled phone" with the
+  exception named, not "no Google services required" — a claim that would have been about the app as a
+  whole while the sign-in API is a compiled-in dependency. `tests/check_site.py` rejects that phrasing.
 - **In-app playback.** The unified `MediaPlayer` player (Jellyfin streams, local files, Spotify
   `preview_url` previews, SoundCloud stream/transcoding URLs, and extracted YouTube audio) runs
   under a `mediaPlayback` foreground service, replacing the old "opens in an external app or

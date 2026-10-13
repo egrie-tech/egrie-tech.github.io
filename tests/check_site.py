@@ -155,6 +155,16 @@ def check_disclosures():
     assert "250 MiB" in privacy, "download caps are a material disclosure"
     assert "yt-dlp" in privacy and "yt-dlp" in terms, "the third-party extractor must be named"
     assert "advertising ID" in privacy, "no-advertising-ID statement"
+    # The Google-services caveat must stay visible: only the Google-account YouTube
+    # sign-in wants Play services or standard microG, and "no Google services needed"
+    # as a blanket claim about the app is wrong.
+    assert "Play services" in app and "standard microG" in app, \
+        "landing page must state which YouTube path needs Google services"
+    assert "MicroG RE" in app, "the MicroG RE limitation must be stated, not hidden in the app README"
+    for text, name in (("index", app), ("privacy", privacy)):
+        assert "No Google services required" not in text, f"{name}: overbroad Google-services claim"
+    assert "requires Google Play services" in privacy, \
+        "the policy must name the Play services dependency of the Google-account path"
     for name, text in (("index", app), ("privacy", privacy), ("terms", terms),
                        ("self-host", (ROOT / "self-host/index.html").read_text())):
         assert ACTIVE_REPO in text, f"{name}: must link the active repository"
