@@ -19,39 +19,47 @@ external fonts or CSS. The only permitted `<script>` is a JSON-LD block (checked
 carries `MobileApplication` and `WebSite` schema for the landing page. Dark mode, print layout,
 reduced-motion, and small-screen behaviour are pure CSS.
 
-## Repository move (October 13, 2026)
+## Repository move and releases (updated October 18, 2026)
 
 Development moved from `egrie-tech/Geotagged-Music-App` to `mob5824m-wq/SoundTrail`. The new
-repository carries the same history up to `22d906f` and the tags `v1.0.1`–`v1.0.8`, but it has **no
-GitHub Releases and no Actions runs yet**, so no prebuilt APKs are attached there; the release assets
-still sit on the previous repository. The site is deliberately honest about that: it links the active
-repository's Releases page (which shows the empty state) and gives the build-from-source command,
-instead of sending visitors to the superseded repo.
+repository carries the same history up to `22d906f`, and its release workflow has now published
+`v1.0.9` through `v1.0.14` with a debug APK attached to each (`soundtrail-<version>-debug.apk`).
+The latest checked release is **v1.0.14** (`versionCode` 15, published October 16, 2026). The old
+repository still holds the `v1.0.1`–`v1.0.8` release assets; the package name is unchanged
+(`tech.egrie.soundtrail`). The site therefore links the active repository's Releases page and names
+the current APK, rather than describing an empty Releases tab.
 
-Two follow-ups belong in the app repository, not here:
+Remaining follow-ups:
 
-1. `app/src/main/java/tech/egrie/soundtrail/ui/PinMapView.kt` sends the map-tile `User-Agent`
+1. `app/src/main/java/tech/egrie/soundtrail/ui/PinMapView.kt` still sends the map-tile `User-Agent`
    `Soundtrail/1.0 (https://github.com/egrie-tech/Geotagged-Music-App)`. Every tile request therefore
-   advertises the **old** repo URL to CARTO. Update it to the new repository.
-2. Publish Releases (with the debug APK) on `mob5824m-wq/SoundTrail`, then check the landing page's
-   `#get` wording again; the site's notice paragraph about missing releases can be deleted once they
-   exist. Consider adding the in-app links to `/privacy/` and `/terms/`, which the app does not yet
-   expose.
+   advertises the **old** repo URL to CARTO. Update it to the new repository (or to a stable project
+   URL).
+2. The app still exposes no in-app links to `/privacy/` and `/terms/`. Add them before a store
+   listing or anything that asks users to accept the terms.
+3. The release workflow and the APK assets are new since the previous review. Re-check the store
+   listing, signing, and Android Auto review path before treating the build as anything more than a
+   sideloadable debug release.
+4. The app README says a request answered from the library "sends nothing at all" to YouTube.
+   `MainViewModel.ask` calls `youtubeData.searchCatalogue` whenever a Google account is connected
+   and the request does not name another provider, even when the library already has a match. The
+   site now discloses the search phrase accurately; align the app README and its in-app copy.
 
 ## Policy basis
 
 Technical review: [`mob5824m-wq/SoundTrail`](https://github.com/mob5824m-wq/SoundTrail), commit
-`22d906f8ed2a939adce7c823beab2fe48f1f6346` (`main`), Android version **1.0.8** (`versionCode` 9),
-reviewed October 13, 2026. Sources included the README, manifest, dependencies, network security
-config, provider integrations, the unified in-app player, map tile loader, sync client, backup
-code, and `server/` (README, API routes, rate limits, `run.py`).
+`37b4413a3fc3a72c6e59cfe8ce6d1e8e606ce4cf` (`main`), Android version **1.0.14** (`versionCode` 15),
+reviewed October 18, 2026. The server tree is unchanged from the 1.0.8 review at `22d906f`; it was
+re-checked in place. Sources included the README, manifest, dependencies, network security config,
+provider integrations, the unified in-app player and queue, the map tile loader, sync client, backup
+code, the new `assistant/`, `voice/`, `mood/`, `auto/`, and `playback/` packages, the release
+workflows, and `server/` (README, API routes, rate limits, `run.py`).
 
-The 1.0.8 review superseded four statements from the earlier 1.0.6 review, and they are now aligned:
+The 1.0.8 review superseded several statements from the earlier 1.0.6 review, and they remain aligned:
 
 - **Default server URL.** The app falls back to `https://soundtrail.duckdns.org` when the sync URL
-  field is empty, so the policy names it. It previously said the URL had "not yet been assigned".
-  The claim that the server is contacted only after sign-up/sign-in or enabled sync is backed by
-  `MainViewModel` (`autoSyncEnabled && connected && hasRecoveryKey`).
+  field is empty, so the policy names it. The claim that the server is contacted only after
+  sign-up/sign-in or enabled sync is backed by `MainViewModel` (`autoSyncEnabled && connected && hasRecoveryKey`).
 - **YouTube sign-in.** Two mutually exclusive paths are disclosed: the Google-account path holds an
   access token in memory only; the Desktop-OAuth **Client ID** path persists access and refresh
   tokens, plus an expiry, in Keystore-encrypted storage — and playlist **auto-import is on by
@@ -61,14 +69,46 @@ The 1.0.8 review superseded four statements from the earlier 1.0.6 review, and t
   Play services or a standard microG install under `com.google.android.gms`; `DeviceApps.systemGmsInstalled`
   and `microGReInstalled` show why MicroG RE is explicitly not enough, and the Client ID path is the
   no-Google-services route. The landing page therefore says "works on a de-Googled phone" with the
-  exception named, not "no Google services required" — a claim that would have been about the app as a
-  whole while the sign-in API is a compiled-in dependency. `tests/check_site.py` rejects that phrasing.
-- **In-app playback.** The unified `MediaPlayer` player (Jellyfin streams, local files, Spotify
-  `preview_url` previews, SoundCloud stream/transcoding URLs, and extracted YouTube audio) runs
-  under a `mediaPlayback` foreground service, replacing the old "opens in an external app or
-  browser" wording. Full-length Spotify tracks still open in Spotify's app.
-- **Extraction internals.** The endpoint is named precisely: one video ID per request, `yt-dlp` plus
+  exception named, not "no Google services required". `tests/check_site.py` rejects that phrasing.
+- **In-app playback and extraction.** The unified `MediaPlayer` player and queue (Jellyfin streams,
+  local files, Spotify `preview_url` previews, SoundCloud stream/transcoding URLs, and extracted
+  YouTube audio) run under a `mediaPlayback` foreground service and one `MediaSession`. Full-length
+  Spotify tracks still open in Spotify. Extraction is one video ID per request, `yt-dlp` plus
   FFmpeg, temporary per-request files, 250 MiB cap, no cookies, no Google token.
+
+The 1.0.14 review adds these disclosures:
+
+- **Voice (Ask).** `RECORD_AUDIO` is requested when the microphone is pressed, never at launch.
+  Recognition is the phone's chosen `SpeechRecognizer` (usually Google's, sometimes an offline
+  engine), so audio handling depends on that engine; the app receives only words, and stores
+  neither audio nor a transcript — except that a request used as a mood description becomes the
+  Mood tab's locally saved text. Spoken replies use the phone's `TextToSpeech` engine and default
+  on; the switch turns them off. Typed requests avoid both services. The policy names this rather
+  than claiming all voice processing is on-device.
+- **YouTube catalogue search from Ask.** With a Google account connected, the recognised phrase is
+  sent to the YouTube Data API's `search` endpoint (`videoCategoryId=10`); the library match itself
+  is on-device, but the catalogue lookup is still a network request unless the request names
+  another provider. Playing a result sends the video ID to the user's sync server for extraction.
+- **Optional AI mood readings.** The default is the on-device engine, with `ai_enabled` false. If a
+  model is switched on, the request contains the mood description (capped at 400 characters), an
+  optional energy hint, the local hour, whether the user is moving, and the search-target sentence —
+  and nothing from the library. Providers are Ollama, an OpenAI-compatible endpoint (including
+  Arena's one-tap preset), and Google AI Studio. API keys and an Ollama proxy token are
+  Keystore-encrypted, never synced, and excluded from exports. Model-suggested songs are searched
+  for on the chosen provider before anything is shown or played.
+- **Optional TheAudioDB tag lookups.** Off by default. When switched on, artist and title of the
+  specific untagged songs a mix is unsure about are sent to TheAudioDB; learned tags are cached
+  locally.
+- **Android Auto.** The app exports a `MediaBrowserService`; `AutoClientPolicy` allows only the app
+  itself, known car hosts, the Google app, the system media surfaces, and callers the platform has
+  already trusted with `MEDIA_CONTENT_CONTROL`, identified by uid. The car gets local pins,
+  playlists, songs, and playback state — no tokens, no Jellyfin address, no audio files.
+- **One likes list, map controls, Spotify handoff.** YouTube imports consolidate into the existing
+  liked list (deduplicated by link, offline copies preserved); the map has search, a **Me** action,
+  and a **Pin** action; Ask can open a Spotify result in one tap. These are product changes, not new
+  data flows.
+- **Release automation.** Merged pull requests now bump the patch version and `versionCode` and
+  publish a release with a debug APK; the site's install copy reflects `v1.0.14`.
 
 Operator-provided details carried forward unchanged: the operator self-hosts the default service in
 Canada; AWS is a possible future provider only; the operator reports no server access logs and
@@ -78,7 +118,8 @@ is not a claim about this website.
 
 The reviewed source snapshot is not the distributed build. **Verify against the APK users actually
 receive** before relying on: the default-server connection behaviour, whether sync's library upload
-is limited to what the policy says, and any analytics/telemetry beyond Google sign-in. Source review
+is limited to what the policy says, microphone and speech-engine behaviour on real devices, the
+model endpoints and defaults, and any analytics/telemetry beyond Google sign-in. Source review
 cannot verify hosting configuration, logging, or dashboard analytics. If "Google auth analytics"
 actually means Firebase Analytics, Google Analytics, custom authentication-event logging, or another
 SDK, name it and describe its fields and retention before shipping it.
@@ -89,11 +130,17 @@ SDK, name it and describe its fields and retention before shipping it.
 - Services intended for adults (18+ and the age of majority where they live), without a claim of
   technical age verification. MIT software permissions remain separate.
 - No payment obligation under these terms; any future paid service needs separate disclosed terms.
+  Third-party model usage and API charges are the user's own.
 - Canadian privacy rights and PIPEDA language only where applicable, not a claim that every
   processing activity falls under that statute.
 - No invented postal address, log-retention period, or AWS deployment.
-- No promise that deleting an account erases independent hosts, other devices, or user-exported
-  backups.
+- No promise that deleting an account erases independent hosts, other devices, user-exported
+  backups, model-provider records, or speech-engine records.
+- AI readings and speech recognition are described as optional third-party processing, with the
+  providers and the data they receive named, and no claim about their retention beyond "their own
+  policy".
+- Android Auto is described as a local media exposure with a narrow caller allowlist, not as a new
+  cloud service.
 
 ## Release checklist
 
@@ -109,21 +156,26 @@ SDK, name it and describe its fields and retention before shipping it.
    listing, and provide a meaningful opportunity to review and accept the terms where required.
    Align store audience settings with the adult-service rule. These website files do not implement
    app-side changes.
-4. Provide the prominent location disclosure and consent Android requires before collection, and
-   make sure users can distinguish connecting to the default server from connecting a music
-   provider: the former discloses IP address and timing even with no library upload.
+4. Provide the prominent location and microphone disclosures Android requires before collection,
+   and make sure users can distinguish connecting to the default server from connecting a music
+   provider or a model: the server discloses IP address and timing even with no library upload.
 5. Honour Google API Limited Use commitments and deletion/consent processes, and reconcile OAuth and
-   app-store disclosures with runtime behaviour.
-6. Obtain appropriate legal review. Keep the monitored email current, and verify a workable
+   app-store disclosures with runtime behaviour. Review any model-provider terms before advertising
+   a specific hosted endpoint.
+6. Verify the Android Auto caller allowlist and the debug-build "Unknown sources" path on a real
+   head unit or Desktop Head Unit, and check that the exported service never exposes tokens or the
+   Jellyfin address.
+7. Obtain appropriate legal review. Keep the monitored email current, and verify a workable
    account-deletion assistance process for users who cannot sign in.
-7. Deploy through the normal review process and configure GitHub Pages. Keep policy URLs stable.
+8. Deploy through the normal review process and configure GitHub Pages. Keep policy URLs stable.
 
 ### Values that go stale on purpose
 
 The landing page and `sitemap.xml` state pinned facts reviewed by hand, so a new release means
-touching them: the software version in the JSON-LD block and the `Reviewed at v1.0.8` pill, the
-`lastmod` dates in `sitemap.xml`, and the "October 13, 2026" stamps. `tests/check_site.py` asserts
-the sitemap dates, so update them together. `python3 tests/check_site.py` is the mechanical half of
+touching them: the software version in the JSON-LD block and the `Reviewed at v1.0.14` pill, the
+`lastmod` dates in `sitemap.xml`, and the `October 18, 2026` stamps. The privacy and terms pages
+also pin the version and commit. `tests/check_site.py` asserts the sitemap dates and the current
+disclosure set, so update them together. `python3 tests/check_site.py` is the mechanical half of
 that job; the policy text itself still needs a human against the source.
 
 ## Preview and checks
@@ -140,8 +192,10 @@ four together (or delete the canonicals and say so here).
 `tests/check_site.py` enforces more than link health: no executable script, no inline event handler,
 no iframe, no external stylesheet or font host, every external host inside a small allow-list, the
 superseded repository linked nowhere, the contact address present on every page, one decorative logo
-per page, and the four v1.0.8 disclosure statements. Keep it that way when adding pages — add them to
-`PAGES` (and `INDEXED` plus the sitemap if they should be indexed).
+per page, and the current disclosure set — including the microphone and speech path, the optional
+model providers and their data, the off-by-default AI switch, TheAudioDB tag lookups, Android Auto,
+and the v1.0.14 version facts. Keep it that way when adding pages — add them to `PAGES` (and
+`INDEXED` plus the sitemap if they should be indexed).
 
 ## Hosting notes
 

@@ -1,43 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Soundtrail app icon">
-  <defs>
-    <radialGradient id="shell" cx="48%" cy="34%" r="82%">
-      <stop offset="0" stop-color="#29343d"/>
-      <stop offset="0.66" stop-color="#222d36"/>
-      <stop offset="1" stop-color="#1b242c"/>
-    </radialGradient>
-    <radialGradient id="disc" cx="48%" cy="38%" r="72%">
-      <stop offset="0" stop-color="#111a22"/>
-      <stop offset="1" stop-color="#17212a"/>
-    </radialGradient>
-    <linearGradient id="pin" x1="148" y1="100" x2="352" y2="409" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#e3ff67"/>
-      <stop offset="0.56" stop-color="#d9f852"/>
-      <stop offset="1" stop-color="#d3f04d"/>
-    </linearGradient>
-    <linearGradient id="note" x1="192" y1="244" x2="241" y2="281" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#ff625b"/>
-      <stop offset="1" stop-color="#f84846"/>
-    </linearGradient>
-    <filter id="pin-shadow" x="90" y="72" width="332" height="374" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
-      <feGaussianBlur in="SourceAlpha" stdDeviation="7"/>
-      <feOffset dy="5"/>
-      <feComponentTransfer><feFuncA type="linear" slope="0.2"/></feComponentTransfer>
-      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-    <clipPath id="shell-clip"><rect width="512" height="512" rx="112"/></clipPath>
-  </defs>
-  <g clip-path="url(#shell-clip)">
-    <rect width="512" height="512" fill="url(#shell)"/>
-    <circle cx="256" cy="258" r="204" fill="url(#disc)" stroke="#101820" stroke-opacity="0.28" stroke-width="2"/>
-    <path d="M256 416c-24-23-128-117-128-192a128 128 0 1 1 256 0c0 75-104 169-128 192Z" fill="url(#pin)" filter="url(#pin-shadow)"/>
-    <path d="M247 134h13v125h-13z" fill="#121a22"/>
-    <path d="M259 134c5 19 16 31 30 44 15 14 20 29 13 45-5 11-14 20-28 28l-8-15c10-6 15-13 16-20 2-11-6-21-18-33-11-11-18-23-21-42z" fill="#121a22"/>
-    <ellipse cx="216" cy="261" rx="35" ry="29" transform="rotate(-20 216 261)" fill="#121a22"/>
-    <ellipse cx="216" cy="261" rx="25" ry="19" transform="rotate(-20 216 261)" fill="url(#note)"/>
-    <path d="M253 316c22-13 36-32 47-56 8-17 18-25 39-27 15-2 29-2 45-2" fill="none" stroke="#121a22" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M281 332c19-13 33-31 46-52 10-16 22-17 47-17" fill="none" stroke="#121a22" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M187 355c25 1 43-3 59-13" fill="none" stroke="#121a22" stroke-width="14" stroke-linecap="round"/>
-    <path d="M197 375c26 0 47-7 67-19" fill="none" stroke="#121a22" stroke-width="14" stroke-linecap="round"/>
-    <rect x="1" y="1" width="510" height="510" rx="111" fill="none" stroke="#8b969f" stroke-opacity="0.2" stroke-width="2"/>
+  <rect width="512" height="512" rx="114" fill="#101114"/>
+  <g transform="scale(4.740741)">
+    <path fill="#D9F67A" d="M36.89,66.41A25.50,25.50 0 1 1 71.11,66.41L54.00,85.50Z"/>
+    <path fill="#101114" d="M55.20,33.50h0.40a1.40,1.40 0 0 1 1.40,1.40v18.60a1.40,1.40 0 0 1 -1.40,1.40h-0.40a1.40,1.40 0 0 1 -1.40,-1.40v-18.60a1.40,1.40 0 0 1 1.40,-1.40Z"/>
+    <path fill="#101114" d="M44.80,53.50a6.20,6.20 0 1 0 12.40,0a6.20,6.20 0 1 0 -12.40,0Z"/>
+    <path fill="#101114" d="M55.40,33.50C63.50,35.60 65.50,41.00 59.00,46.00L55.40,47.60Z"/>
+    <path fill="#FF645E" d="M48.40,53.50a2.60,2.60 0 1 0 5.20,0a2.60,2.60 0 1 0 -5.20,0Z"/>
+    <path d="M43.00,66.00Q54.00,69.60 65.00,66.00" fill="none" stroke="#101114" stroke-width="4.0" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M48.50,75.40Q54.00,77.40 59.50,75.40" fill="none" stroke="#101114" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
+  <rect x="1" y="1" width="510" height="510" rx="113" fill="none" stroke="#8b969f" stroke-opacity="0.2" stroke-width="2"/>
 </svg>

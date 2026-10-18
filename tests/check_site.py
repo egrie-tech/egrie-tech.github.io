@@ -121,7 +121,7 @@ def check_seo():
         assert f'rel="canonical" href="{url}"' in (ROOT / rel).read_text(), f"{rel}: canonical URL mismatch"
     assert "404.html" not in sitemap, "the error page does not belong in the sitemap"
     dates = set(re.findall(r"<lastmod>([^<]+)</lastmod>", sitemap))
-    assert dates == {"2026-10-13"}, f"sitemap lastmod dates must match the review date: {sorted(dates)}"
+    assert dates == {"2026-10-18"}, f"sitemap lastmod dates must match the review date: {sorted(dates)}"
     assert "Sitemap: " + base + "sitemap.xml" in robots, "robots.txt: sitemap line missing"
     assert not (ROOT / "privacy" / "index.html").read_text().count("noindex"), "legal pages must stay indexable"
     assert 'name="robots" content="noindex"' in (ROOT / "404.html").read_text(), "404 must stay out of the index"
@@ -146,6 +146,13 @@ def check_disclosures():
     app = (ROOT / "index.html").read_text()
     assert "laws of Ontario" in terms, "Ontario governing law"
     assert "Everett Grieve" in privacy, "operator identity"
+    # Current version facts: the site pins the reviewed release on every legal page.
+    assert "1.0.14" in app, "landing page must name the reviewed app version"
+    assert '\"softwareVersion\":\"1.0.14\"' in app, "JSON-LD softwareVersion is stale"
+    assert "37b4413" in privacy and "37b4413" in terms, "legal pages must name the reviewed commit"
+    assert "v1.0.9" in app and "v1.0.14" in app, "release history is stale"
+    assert "Once Releases are published" not in app, "releases now exist; remove the old caveat"
+    assert "soundtrail-1.0.14-debug.apk" in app, "install step must name the current APK"
     # Claims that were stale against app v1.0.8 and must not regress:
     assert "soundtrail.duckdns.org" in privacy, "default sync server must be named in the policy"
     assert "soundtrail.duckdns.org" in terms, "default sync server must be named in the terms"
@@ -165,13 +172,26 @@ def check_disclosures():
         assert "No Google services required" not in text, f"{name}: overbroad Google-services claim"
     assert "requires Google Play services" in privacy, \
         "the policy must name the Play services dependency of the Google-account path"
+    # Voice, speech, and optional model readings, added at app 1.0.14:
+    assert "RECORD_AUDIO" in privacy, "the microphone permission must be disclosed"
+    assert "speech" in privacy and "text-to-speech" in privacy, "speech recognition and replies must be disclosed"
+    assert "does not record" in privacy, "the policy must say the app does not record audio"
+    assert "Ollama" in privacy and "OpenAI-compatible" in privacy, "model providers must be named"
+    assert "Google AI Studio" in privacy and "Arena" in privacy, "hosted model providers must be named"
+    assert "off by default" in privacy, "the model reading must be disclosed as opt-in"
+    assert "TheAudioDB" in privacy, "tag lookups must be disclosed"
+    assert "Android Auto" in privacy and "Android Auto" in app, "the car path must be disclosed"
+    assert "MEDIA_CONTENT_CONTROL" in privacy, "the Android Auto caller allowlist must be stated"
+    assert "Android Auto" in terms and "Ollama" in terms and "Arena" in terms, \
+        "the terms must cover car, speech, and model providers"
+    assert "Keystore" in privacy, "stored secrets must be described"
     for name, text in (("index", app), ("privacy", privacy), ("terms", terms),
                        ("self-host", (ROOT / "self-host/index.html").read_text())):
         assert ACTIVE_REPO in text, f"{name}: must link the active repository"
     assert STALE_REPO not in "".join(
         href for href in Page(privacy).links + Page(terms).links + Page(app).links if "http" in href
     ), "a legal page links the superseded repository"
-    print("PASS active-repo links and the v1.0.8 disclosure set")
+    print("PASS active-repo links, release facts, and the v1.0.14 disclosure set")
 
 
 if __name__ == "__main__":
