@@ -19,9 +19,12 @@ ACTIVE_REPO = "mob5824m-wq/SoundTrail"
 ACTIVE_REPO_URL = "https://github.com/" + ACTIVE_REPO
 STALE_REPO = "egrie-tech/Geotagged-Music-App"
 ORIGIN = "egrie-tech.github.io"
-# Registrable domains the site is allowed to link. Subdomains are matched, so a
-# new *.google.com destination still has to be added deliberately here first.
-ALLOWED_DOMAINS = {ORIGIN, "github.com", "google.com", "youtube.com", "priv.gc.ca", "ffmpeg.org"}
+# Outbound service hosts are explicitly allow-listed; add each new destination deliberately.
+ALLOWED_DOMAINS = {
+    ORIGIN, "github.com", "google.com", "google.dev", "youtube.com", "priv.gc.ca", "ffmpeg.org",
+    "discord.gg", "spotify.com", "soundcloud.com", "jellyfin.org", "ollama.com", "openai.com",
+    "openrouter.ai", "arena.ai", "anthropic.com",
+}
 LD_JSON = 'type="application/ld+json"'
 
 
@@ -85,6 +88,7 @@ def check():
         assert 'class="placeholder"' not in text, f"{label}: unresolved placeholder"
         assert "Draft" not in text and "draft" not in text, f"{label}: stale draft notice"
         assert "mailto:mob5824@proton.me" in text, f"{label}: contact missing"
+        assert "https://discord.gg/rZzbuEjXrg" in text, f"{label}: community help link missing"
         for href in page.links:
             url = urlsplit(href)
             if url.scheme == "mailto":
@@ -93,8 +97,7 @@ def check():
                 host = url.netloc.split(":")[0]
                 assert any(host == d or host.endswith("." + d) for d in ALLOWED_DOMAINS), \
                     f"{label}: unexpected external host {href}"
-                # Deliberate hard rule: every outbound link on this site goes to the active repo.
-                # The superseded repository may be named in text, but never linked.
+                # The active app repository may be linked; the superseded repository must never be linked.
                 assert STALE_REPO not in url.path, f"{label}: link still points at the superseded repo ({href})"
                 continue
             target, parsed = local_target(path, href)
@@ -146,6 +149,16 @@ def check_disclosures():
     app = (ROOT / "index.html").read_text()
     assert "laws of Ontario" in terms, "Ontario governing law"
     assert "Everett Grieve" in privacy, "operator identity"
+    egrie_link = '<a href="https://github.com/egrie-tech">egrie-tech</a>'
+    mob_link = '<a href="https://github.com/mob5824m-wq">mob5824m-wq</a>'
+    for name, text in (("index", app), ("privacy", privacy), ("terms", terms),
+                       ("404", (ROOT / "404.html").read_text())):
+        assert "Everett Grieve (" in text and "also known as " in text and egrie_link in text and mob_link in text, \
+            f"{name}: maintainer attribution must link both handles to the same person"
+    readme = (ROOT / "README.md").read_text()
+    assert "[egrie-tech](https://github.com/egrie-tech)" in readme and \
+        "[mob5824m-wq](https://github.com/mob5824m-wq)" in readme, \
+        "README: maintainer attribution must link both GitHub profiles"
     # Current version facts: the site pins the reviewed release on every legal page.
     assert "1.0.14" in app, "landing page must name the reviewed app version"
     assert '\"softwareVersion\":\"1.0.14\"' in app, "JSON-LD softwareVersion is stale"
@@ -182,8 +195,72 @@ def check_disclosures():
     assert "TheAudioDB" in privacy, "tag lookups must be disclosed"
     assert "Android Auto" in privacy and "Android Auto" in app, "the car path must be disclosed"
     assert "MEDIA_CONTENT_CONTROL" in privacy, "the Android Auto caller allowlist must be stated"
+    assert "Discord help group" in privacy and "third-party platform" in privacy, \
+        "the privacy policy must identify Discord as a third-party support channel"
+    assert "Discord help group" in terms, "the terms must cover the Discord support channel"
     assert "Android Auto" in terms and "Ollama" in terms and "Arena" in terms, \
         "the terms must cover car, speech, and model providers"
+    assert "which you must follow" in terms and "Privacy Policy before sending a mood request" in terms, \
+        "AI Mood users must follow provider terms and review its privacy policy"
+    assert "which you must follow" in app and "review its Privacy Policy before sending a mood request" in app, \
+        "the landing page must disclose the model-provider requirements"
+    provider_policy_urls = (
+        "https://policies.google.com/terms",
+        "https://policies.google.com/privacy",
+        "https://developers.google.com/terms",
+        "https://ai.google.dev/gemini-api/terms",
+        "https://www.spotify.com/legal/end-user-agreement/",
+        "https://developer.spotify.com/terms",
+        "https://www.spotify.com/legal/privacy-policy/",
+        "https://pages.soundcloud.com/legal/terms-of-use.html",
+        "https://developers.soundcloud.com/docs/api/terms-of-use",
+        "https://pages.soundcloud.com/legal/privacy-policy.html",
+        "https://jellyfin.org/",
+        "https://jellyfin.org/docs/general/community-standards/servers/",
+        "https://docs.github.com/en/site-policy/github-terms/github-terms-of-service",
+        "https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement",
+        "https://ollama.com/terms",
+        "https://ollama.com/privacy",
+        "https://www.anthropic.com/legal/consumer-terms",
+        "https://www.anthropic.com/legal/commercial-terms",
+        "https://www.anthropic.com/legal/privacy",
+        "https://www.anthropic.com/legal/data-processing-addendum",
+        "https://openai.com/policies/row-terms-of-use/",
+        "https://openai.com/policies/",
+        "https://openai.com/policies/service-terms/",
+        "https://openai.com/policies/services-agreement/",
+        "https://openai.com/policies/row-privacy-policy/",
+        "https://openai.com/policies/api-data-usage-policies/",
+        "https://openrouter.ai/terms",
+        "https://openrouter.ai/privacy",
+        "https://help.arena.ai/articles/5629909088-terms-of-use",
+        "https://help.arena.ai/articles/3765052346-privacy-policy",
+    )
+    for url in provider_policy_urls:
+        assert f'href="{url}"' in terms, f"terms: missing official provider policy link {url}"
+    assert "Jellyfin is self-hosted software, not one hosted service" in terms, \
+        "Jellyfin must not be described as one centrally hosted service"
+    assert "individual-services privacy policy does not cover API content" in terms, \
+        "OpenAI API data handling must not be conflated with its individual-services privacy policy"
+    assert "The Privacy Policy does not cover customer business/API content" in terms, "Anthropic API handling must be distinguished from its consumer privacy policy"
+    assert '../terms/#provider-policy-links' in privacy, "privacy policy should link to the provider policy list"
+    assert "Before enabling AI Mood" in app and "changing the provider or endpoint URL" in app, \
+        "the landing page must advise users to re-check provider changes"
+    assert "Soundtrail cannot verify who operates a custom endpoint" in app, \
+        "custom endpoint limitations must be disclosed"
+    assert "follow its applicable terms and usage policies" in privacy, \
+        "the privacy policy must direct AI Mood users to provider terms and policies"
+    assert "Changing the provider or endpoint URL can change who receives the request" in privacy, \
+        "the privacy policy must disclose provider changes"
+    assert "Before enabling or changing an endpoint" in terms and "confirm you trust the destination" in terms, \
+        "the terms must advise users to verify endpoints before use"
+    for name, text in (("index", app), ("privacy", privacy), ("terms", terms)):
+        assert "not medical or mental-health advice, diagnosis, or crisis support" in text, \
+            f"{name}: AI Mood must be limited to music discovery, not health or crisis support"
+    assert "Avoid including sensitive or identifying details in mood descriptions" in app and privacy, \
+        "the landing page and privacy policy must warn against sensitive mood prompts"
+    assert "Do not include sensitive or identifying details in a mood prompt" in terms, \
+        "the terms must warn against sensitive mood prompts"
     assert "Keystore" in privacy, "stored secrets must be described"
     for name, text in (("index", app), ("privacy", privacy), ("terms", terms),
                        ("self-host", (ROOT / "self-host/index.html").read_text())):
@@ -194,8 +271,27 @@ def check_disclosures():
     print("PASS active-repo links, release facts, and the v1.0.14 disclosure set")
 
 
+def check_self_host_guide():
+    guide = (ROOT / "self-host/index.html").read_text()
+    for text in (
+        "python3 run.py --setup", "python3 run.py --test",
+        "curl -fsS http://127.0.0.1:8080/health",
+        "Invoke-RestMethod http://127.0.0.1:8080/health",
+        "TCP ports", "443", "sudo caddy validate --config /etc/caddy/Caddyfile",
+        "systemctl enable --now soundtrail-sync",
+        "SOUNDTRAIL_DB=/var/lib/soundtrail/data/soundtrail.sqlite3",
+        "journalctl -u soundtrail-sync", "X-Forwarded-For", "python3-venv",
+        "tar -czf /secure-backups/soundtrail-data-$(date +%F).tar.gz",
+    ):
+        assert text in guide, f"self-host guide missing setup instruction: {text}"
+    assert "WantedBy=multi-user.target" in guide, "systemd unit needs an install target"
+    assert "stop the service" in guide, "backup instructions must stop SQLite before archiving"
+    print("PASS self-host guide: local smoke test, HTTPS proxy, systemd, updates, and backups")
+
+
 if __name__ == "__main__":
     check()
     check_seo()
     check_site_css()
     check_disclosures()
+    check_self_host_guide()
