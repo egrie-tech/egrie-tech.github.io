@@ -12,7 +12,7 @@ issue reports, and license questions there.
 - `/404.html` — error page (GitHub Pages serves it for any unmatched path)
 - `/assets/` — one stylesheet and the SVG app icon; `/sitemap.xml`, `/robots.txt`
 
-Public operator: **Everett Grieve (egrie-tech), Ontario, Canada** · Contact: **mob5824@proton.me**
+Public operator: **Everett Grieve ([egrie-tech](https://github.com/egrie-tech), also known as [mob5824m-wq](https://github.com/mob5824m-wq)), Ontario, Canada** · Contact: **mob5824@proton.me**
 
 There is no build step, no bundler, and no third-party request: no JavaScript, no analytics, no
 external fonts or CSS. The only permitted `<script>` is a JSON-LD block (checked by the test), which

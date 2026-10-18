@@ -16,11 +16,13 @@
 <meta name="twitter:card" content="summary">
 <link rel="stylesheet" href="../assets/styles.css">
 </head>
-<body>
+<body class="self-host-page">
 <a class="skip" href="#main">Skip to content</a>
-<header><a class="brand" href="../"><img class="brand-mark" src="../assets/soundtrail-logo.svg" alt="" aria-hidden="true" width="36" height="36"><span>Soundtrail<span class="brand-dot">.</span></span></a><nav aria-label="Main navigation"><a href="../#features">Features</a><a href="./" aria-current="page">Self-host</a><a href="../privacy/">Privacy</a><a href="../terms/">Terms</a><a class="gh" href="https://github.com/mob5824m-wq/SoundTrail">GitHub ↗</a></nav></header>
+<header><a class="brand" href="../"><img class="brand-mark" src="../assets/soundtrail-logo.svg" alt="" aria-hidden="true" width="36" height="36"><span>Soundtrail<span class="brand-dot">.</span></span></a><nav aria-label="Main navigation"><a href="../#features">Features</a><a href="./" aria-current="page">Self-host</a><a href="../privacy/">Privacy</a><a href="../terms/">Terms</a><a href="https://discord.gg/rZzbuEjXrg" aria-label="Soundtrail help group on Discord">Discord help ↗</a><a class="gh" href="https://github.com/mob5824m-wq/SoundTrail">GitHub ↗</a></nav></header>
 <main id="main">
 <div class="hero"><div class="eyebrow">Self-hosting</div><h1>Run the sync server yourself</h1><p class="intro">The Android app is fully local without a server. A server only adds optional two-way encrypted sync and the audio-extraction endpoint (used for downloads and for in-app YouTube playback) — and it is plain Python with no Docker requirement, so a $5 VPS, a Raspberry Pi, or a box in your closet all work.</p><p class="meta">Verified against <a href="https://github.com/mob5824m-wq/SoundTrail/tree/main/server"><code>server/</code> at <code>main</code></a> · October 18, 2026</p></div>
+
+<nav class="quick-path" aria-label="Recommended setup sequence"><a href="#install"><span class="path-number">01</span><span><strong>Test locally</strong><small>Install and check the API</small></span></a><a href="#proxy"><span class="path-number">02</span><span><strong>Add HTTPS</strong><small>DNS, firewall, and Caddy</small></span></a><a href="#service"><span class="path-number">03</span><span><strong>Keep it running</strong><small>Service, updates, and backups</small></span></a><a href="#app"><span class="path-number">04</span><span><strong>Connect Soundtrail</strong><small>Use the public HTTPS URL</small></span></a></nav>
 
 <div class="layout">
 <aside class="toc" aria-label="On this page"><strong>On this page</strong><a href="#what">What it is for</a><a href="#visibility">What it can see</a><a href="#install">Install</a><a href="#proxy">TLS &amp; proxy</a><a href="#service">Service &amp; backups</a><a href="#limits">Limits &amp; endpoints</a><a href="#app">Point the app at it</a><a href="#duties">Your duties</a></aside>
@@ -30,36 +32,74 @@
 
 <section id="visibility"><h2>2. What the server can and cannot see</h2><table><thead><tr><th>Visible to the server</th><th>Not visible to the server</th></tr></thead><tbody><tr><td>Account email address, salted password hash, session tokens and expiry, request timing, source IP in proxy/server logs.</td><td>Pin titles, notes, coordinates, playlist contents, song links, automation rules — all of it arrives as ciphertext.</td></tr><tr><td>Event IDs and sequences, ciphertext sizes, and per-account sync volume.</td><td>The 256-bit recovery key, which never leaves the device.</td></tr><tr><td>For an extraction request: the single YouTube video ID you submit, plus the temporary audio file while it is served.</td><td>Local audio files, imported music, provider credentials, mood descriptions, model requests, speech audio, and transcripts, none of which pass through the sync server.</td></tr></tbody></table><p>End-to-end encryption of library content does not hide your account email, IP address, or traffic metadata. If you host the service for other people, those are the things <em>they</em> are trusting you with — along with whatever your reverse proxy logs.</p></section>
 
-<section id="install"><h2>3. Install natively</h2><p>Python 3.10 or newer, on Linux, macOS, Windows, or BSD, on x86-64, ARM64, or other CPUs. FFmpeg and a JS runtime are needed only for the extraction endpoint.</p>
+<section id="install"><h2>3. Install and test locally</h2><p>Start with a foreground run before making this public. The server needs Python 3.10 or newer and Git; it runs on Linux, macOS, Windows, and BSD. FFmpeg and a JavaScript runtime are optional and needed only for YouTube audio extraction.</p>
 <ol class="steps">
 <li><h3>Clone the repository</h3><pre><code>git clone https://github.com/mob5824m-wq/SoundTrail.git
-cd SoundTrail/server</code></pre></li>
-<li><h3>Start it</h3><p><code>run.py</code> creates a private <code>.venv</code>, installs the pinned dependencies, and starts the API. Use <code>python3 run.py --setup</code> to prepare without starting, and <code>python3 run.py --test</code> to run the API test suite.</p><pre><code>python3 run.py            # Windows: py -3 run.py</code></pre></li>
-<li><h3>Optional: extraction only</h3><p>Install <a href="https://ffmpeg.org/download.html">FFmpeg</a> on <code>PATH</code>. <code>requirements.txt</code> pins <code>yt-dlp</code> (pure Python); <code>requirements-js.txt</code> pins <code>deno</code> as a JavaScript runtime for YouTube's challenge solver, and Deno publishes wheels for only some platforms — elsewhere <code>run.py</code> skips it and uses Deno or Node from <code>PATH</code>. Update those pins deliberately and re-test extraction afterwards, because it breaks when YouTube changes.</p></li>
+cd SoundTrail/server
+python3 --version</code></pre><p>Confirm the reported Python version is 3.10 or newer. On Windows, use <code>py -3</code> in place of <code>python3</code>.</p></li>
+<li><h3>Prepare the environment and run tests</h3><pre><code>python3 run.py --setup
+python3 run.py --test</code></pre><p>The launcher creates a private <code>.venv</code> and installs the pinned dependencies. The first setup needs internet access to download packages; later starts reuse the environment. <code>--test</code> runs the API test suite. If setup reports that <code>venv</code> or <code>ensurepip</code> is missing, install the matching Python venv package from your OS (for example, <code>python3-venv</code> on Debian/Ubuntu) and retry.</p></li>
+<li><h3>Start the API and check it</h3><pre><code>python3 run.py</code></pre><p>Leave it running, then open a second terminal on the same machine and check the health endpoint:</p><pre><code>curl -fsS http://127.0.0.1:8080/health</code></pre><p>A healthy server returns <code>{"status":"ok","version":"v1"}</code>. In Windows PowerShell, use <code>Invoke-RestMethod http://127.0.0.1:8080/health</code>. Stop the foreground process with <kbd>Ctrl</kbd>+<kbd>C</kbd>. It listens on <code>127.0.0.1:8080</code> by default; that is local-only and is the right setting when a reverse proxy runs on the same machine.</p></li>
 </ol>
-<p>The SQLite database is created at <code>server/data/soundtrail.sqlite3</code>. Configuration is three environment variables: <code>PORT</code> (default <code>8080</code>), <code>SOUNDTRAIL_HOST</code> (default <code>127.0.0.1</code>), and <code>SOUNDTRAIL_DB</code> for a different disk. Keep the loopback default.</p></section>
+<p>On Windows, run the same commands as <code>py -3 run.py --setup</code>, <code>py -3 run.py --test</code>, and <code>py -3 run.py</code>. Keep the terminal's working directory set to <code>SoundTrail/server</code>.</p>
+<p>The default database file is <code>server/data/soundtrail.sqlite3</code>. The settings are <code>PORT</code> (default <code>8080</code>), <code>SOUNDTRAIL_HOST</code> (default <code>127.0.0.1</code>), and <code>SOUNDTRAIL_DB</code> (full path to a different SQLite file). For a service, choose a stable data path and ensure its parent directory is writable by the service account. Do not expose the Python port directly to the internet.</p>
+<h3>Optional: enable YouTube audio extraction</h3><p>Sync works without these extras. For extraction, install <a href="https://ffmpeg.org/download.html">FFmpeg</a> on <code>PATH</code>. The launcher attempts to install the pinned Deno runtime for yt-dlp's YouTube challenge solver; if that wheel is unavailable for your platform, install Deno or Node.js on <code>PATH</code>. Extraction also needs outbound access to YouTube and temporary disk space. Re-test it after updating <code>yt-dlp</code>, because YouTube changes can break extraction.</p></section>
 
-<section id="proxy"><h2>4. Put TLS in front of it</h2><p>The app expects an <code>https://</code> URL (a bare host is upgraded to HTTPS), so a certificate is not optional. Caddy automates it: point DNS at the machine, then use <a href="https://github.com/mob5824m-wq/SoundTrail/blob/main/server/Caddyfile.example"><code>server/Caddyfile.example</code></a>, which is essentially:</p>
-<pre><code>sync.example.net {
+<section id="proxy"><h2>4. Publish it behind HTTPS</h2><p>The Android app requires an <code>https://</code> server URL, so keep the API on loopback and put a TLS reverse proxy in front of it. This example uses Caddy on the same Linux host:</p>
+<ol class="steps">
+<li><h3>Point a domain at the server</h3><p>Create an <code>A</code> record for your public IPv4 address (and an <code>AAAA</code> record only if IPv6 is correctly configured). Replace <code>sync.example.net</code> below with that hostname. Allow inbound TCP ports <code>80</code> and <code>443</code> in both the host firewall and any VPS/cloud firewall.</p></li>
+<li><h3>Configure Caddy to proxy to the local API</h3><p>Install Caddy using the package for your operating system, then put this site block in <code>/etc/caddy/Caddyfile</code>. The repository's <a href="https://github.com/mob5824m-wq/SoundTrail/blob/main/server/Caddyfile.example">example Caddyfile</a> contains the same configuration.</p><pre><code>sync.example.net {
     encode zstd gzip
     reverse_proxy 127.0.0.1:8080
-}</code></pre>
-<p>Do not expose port 8080 directly. Configure the proxy to <strong>overwrite or sanitize</strong> client-supplied <code>X-Forwarded-For</code> before passing it upstream — the server trusts that header only when its direct peer is private or loopback, which is what makes per-IP limits meaningful. Keep your own request-body and rate limits at the proxy too, especially with multiple workers: the in-process limits reset on restart and apply per instance.</p></section>
+}</code></pre><p>Replace <code>sync.example.net</code> with your DNS name. With public DNS and ports 80/443 reachable, Caddy obtains and renews the HTTPS certificate automatically. On a systemd install, validate and reload the config with:</p><pre><code>sudo caddy validate --config /etc/caddy/Caddyfile
+sudo systemctl reload caddy</code></pre></li>
+<li><h3>Verify the public health check</h3><pre><code>curl -fsS https://sync.example.net/health</code></pre><p>It should return <code>{"status":"ok","version":"v1"}</code>. If not, check DNS, firewall rules, Caddy's service log, and that the API is healthy at <code>http://127.0.0.1:8080/health</code>.</p></li>
+</ol>
+<p><strong>Never forward public traffic directly to port 8080.</strong> Configure the proxy to overwrite or sanitize client-supplied <code>X-Forwarded-For</code> before passing it upstream — the server trusts that header only when its direct peer is private or loopback, which is what makes per-IP limits meaningful. Keep proxy request-body and rate limits too, especially with multiple workers: the app's in-process limits reset on restart and apply per instance.</p></section>
 
-<section id="service"><h2>5. Run as a service, and back it up</h2><p>Run it as a dedicated unprivileged user under your service manager. A systemd unit is the short version of what the repository documents:</p>
-<pre><code>[Service]
+<section id="service"><h2>5. Keep it running, update it, and back it up</h2><p>For a public Linux server, run the API as a dedicated unprivileged account and let <code>systemd</code> restart it after a reboot. The example below assumes a root-owned checkout at <code>/opt/soundtrail</code>, Python 3.10+ at <code>/usr/bin/python3</code>, and the Caddy proxy from section 4.</p>
+<h3>Linux: prepare the service account</h3><p>If you have not already deployed the repository, clone it into the example location:</p><pre><code>sudo git clone https://github.com/mob5824m-wq/SoundTrail.git /opt/soundtrail</code></pre><p>Create separate writable locations for the database and Python virtual environment. The repository code can remain read-only to the service account; <code>run.py</code> needs write access to <code>server/.venv</code> to install its pinned packages.</p><pre><code>sudo useradd --system --user-group --home-dir /var/lib/soundtrail --create-home --shell /usr/sbin/nologin soundtrail
+sudo install -d -o soundtrail -g soundtrail -m 0750 /var/lib/soundtrail/data
+sudo install -d -o soundtrail -g soundtrail -m 0750 /opt/soundtrail/server/.venv
+sudo -u soundtrail /usr/bin/python3 -m venv /opt/soundtrail/server/.venv
+sudo -u soundtrail /usr/bin/python3 /opt/soundtrail/server/run.py --setup
+sudo -u soundtrail /usr/bin/python3 /opt/soundtrail/server/run.py --test</code></pre><p>Change <code>/opt/soundtrail</code> if your checkout is elsewhere. Verify <code>/usr/bin/python3 --version</code> is 3.10 or newer before continuing. If creating the environment fails because venv support is missing, install the matching OS package (for example, <code>python3-venv</code> on Debian/Ubuntu). Install FFmpeg and a supported Deno or Node runtime system-wide if you want extraction; sync itself does not need them.</p>
+<h3>Create the systemd unit</h3><p>Save this complete unit as <code>/etc/systemd/system/soundtrail-sync.service</code>:</p><pre><code>[Unit]
+Description=Soundtrail encrypted sync API
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
 User=soundtrail
+Group=soundtrail
 WorkingDirectory=/opt/soundtrail/server
 Environment=SOUNDTRAIL_HOST=127.0.0.1
 Environment=PORT=8080
-Environment=SOUNDTRAIL_DB=/var/lib/soundtrail/soundtrail.sqlite3
+Environment=SOUNDTRAIL_DB=/var/lib/soundtrail/data/soundtrail.sqlite3
+UMask=0077
+PrivateTmp=true
+NoNewPrivileges=true
 ExecStart=/usr/bin/python3 /opt/soundtrail/server/run.py
-Restart=on-failure</code></pre>
-<p>On macOS use launchd, on Windows Task Scheduler or a wrapper such as NSSM, with the working directory set to <code>server</code>. <code>/health</code> reports liveness only.</p>
-<p>Back up the whole <code>data</code> folder with the service <em>stopped</em>, so you archive the database and its WAL side-files together, and test a restore from the archive:</p>
-<pre><code>mkdir -p backups &amp;&amp; chmod 700 backups
-tar -czf backups/soundtrail-data.tar.gz -C . data</code></pre>
-<p>This is the one operation with no undo: if the database is lost, only a backup restores the encrypted event log and checkpoints, and users cannot rebuild it from their devices' history. There is no server-side key or password reset that substitutes for it. Keep an off-host copy. The extraction endpoint also needs outbound network access to YouTube and enough free temporary disk for up to two concurrent 250 MiB downloads plus working files.</p></section>
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target</code></pre><p>Load and start it, then check the service and local health endpoint:</p><pre><code>sudo systemctl daemon-reload
+sudo systemctl enable --now soundtrail-sync
+sudo systemctl status soundtrail-sync --no-pager
+curl -fsS http://127.0.0.1:8080/health</code></pre><p>Use <code>sudo journalctl -u soundtrail-sync -n 50 --no-pager</code> to inspect startup errors. If health fails, check the log, database-directory ownership, Python version, and port conflicts. The database path in <code>SOUNDTRAIL_DB</code> must match the path you back up.</p>
+<h3>Updating the server</h3><p>Back up the database first. For a root-owned checkout at <code>/opt/soundtrail</code>, pull the update as the checkout owner, refresh dependencies and run the tests as the service user, then restart:</p><pre><code>sudo systemctl stop soundtrail-sync
+cd /opt/soundtrail
+sudo git pull --ff-only origin main &amp;&amp;
+sudo -u soundtrail /usr/bin/python3 server/run.py --setup &amp;&amp;
+sudo -u soundtrail /usr/bin/python3 server/run.py --test &amp;&amp;
+sudo systemctl start soundtrail-sync &amp;&amp;
+sudo systemctl status soundtrail-sync --no-pager</code></pre><p>The <code>&amp;&amp;</code> chain stops before restart if an update, setup, or test fails. If the health check then fails, stop the service and inspect the logs or restore the previous code and database backup.</p>
+<h3>Other operating systems</h3><p>On macOS use <code>launchd</code>; on Windows use Task Scheduler or a service wrapper such as NSSM. Run <code>python3 run.py</code> (or <code>py -3 run.py</code>) with the working directory set to <code>server</code>, set the same <code>SOUNDTRAIL_HOST</code>, <code>PORT</code>, and <code>SOUNDTRAIL_DB</code> values, and run it as a non-administrator account. Keep the API bound to loopback when the TLS proxy shares the machine.</p>
+<h3>Back up and restore the database</h3><p>Stop the service before archiving so SQLite is closed and its database and WAL side-files are captured together. Back up the directory containing the file set by <code>SOUNDTRAIL_DB</code>; for the systemd example above:</p><pre><code>sudo systemctl stop soundtrail-sync
+sudo tar -czf /secure-backups/soundtrail-data-$(date +%F).tar.gz -C /var/lib/soundtrail/data .
+sudo systemctl start soundtrail-sync</code></pre><p>Create <code>/secure-backups</code> as a private directory on a separate disk or backup target first. If you kept the default database location, stop the process and archive <code>server/data</code> instead. To restore, stop the service, keep a copy of the current data directory, and extract the archive into the parent directory of <code>SOUNDTRAIL_DB</code>. For the example path, restore ownership with <code>sudo chown -R soundtrail:soundtrail /var/lib/soundtrail/data</code>, then start the service and test a login/sync. Protect backups as private data and keep an off-host copy.</p><p>If the database is lost, only a backup restores the encrypted event log and checkpoints; users cannot rebuild it from device history, and a password reset does not recover the encryption key. The extraction endpoint also needs outbound network access to YouTube and enough temporary disk for up to two concurrent 250 MiB downloads plus working files. <code>/health</code> reports liveness only.</p></section>
 
 <section id="limits"><h2>6. Limits, quotas, and the API surface</h2><p>The database enforces a <strong>64 MiB per-account quota</strong> for encrypted events and checkpoints, and snapshots are capped at <strong>8 MiB</strong>. After a sync, event rows are pruned into the client's encrypted checkpoint and retry-receipt metadata goes with them, so an old delivery ID may be accepted again later — harmless because entity clocks and tombstones make duplicate old versions a no-op. Passwords are per-account salted scrypt hashes; session tokens are random, expire after 30 days, and are stored only as SHA-256 hashes.</p>
 <table><thead><tr><th>Route</th><th>Purpose</th><th>Default in-process limit</th></tr></thead><tbody>
@@ -79,7 +119,7 @@ tar -czf backups/soundtrail-data.tar.gz -C . data</code></pre>
 <li><h3>Then add the second device</h3><p>Enter the same server URL, sign in, and enter the saved key. Automatic sync is off by default; <strong>Sync automatically when Soundtrail opens</strong> runs a sync at launch, which needs a signed-in account and this device's stored key. <strong>Retry sync</strong> re-runs the same merge after a failure, and Connect shows pending local changes.</p></li>
 </ol></section>
 
-<section id="duties"><h2>8. If other people use your instance, you are the operator</h2><p>Hosting Soundtrail code does not make the project maintainer the operator of your server. You become responsible for its deployment, updates, HTTPS, access controls, storage, logs, backups, and any privacy or legal obligations to your users — including publishing your own disclosure of what you retain and for how long, honouring deletion and access requests, and deciding how a lost password or a misuse report is handled. Our <a href="../privacy/">Privacy Policy</a> and <a href="../terms/">Terms of Service</a> describe only the service the maintainer operates and are a starting point, not a template that has been reviewed for your jurisdiction.</p><p>The <a href="../terms/#accounts">account and key section</a> of the terms covers where responsibility for an independently hosted server starts and stops. Questions about this guide are welcome in the <a href="https://github.com/mob5824m-wq/SoundTrail/issues">issue tracker</a> — please do not post credentials, recovery keys, or private coordinates there — or by email to <a href="mailto:mob5824@proton.me">mob5824@proton.me</a>.</p></section>
+<section id="duties"><h2>8. If other people use your instance, you are the operator</h2><p>Hosting Soundtrail code does not make the project maintainer the operator of your server. You become responsible for its deployment, updates, HTTPS, access controls, storage, logs, backups, and any privacy or legal obligations to your users — including publishing your own disclosure of what you retain and for how long, honouring deletion and access requests, and deciding how a lost password or a misuse report is handled. Our <a href="../privacy/">Privacy Policy</a> and <a href="../terms/">Terms of Service</a> describe only the service the maintainer operates and are a starting point, not a template that has been reviewed for your jurisdiction.</p><p>The <a href="../terms/#accounts">account and key section</a> of the terms covers where responsibility for an independently hosted server starts and stops. For community help with this guide, join the <a href="https://discord.gg/rZzbuEjXrg">Soundtrail Discord help group</a>; technical bug reports belong in the <a href="https://github.com/mob5824m-wq/SoundTrail/issues">issue tracker</a>. Do not share passwords, API keys, recovery keys, or private coordinates in Discord or GitHub. For private account or privacy concerns, email <a href="mailto:mob5824@proton.me">mob5824@proton.me</a>.</p></section>
 
 </article></div>
 </main>
