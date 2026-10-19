@@ -22,7 +22,7 @@ ORIGIN = "egrie-tech.github.io"
 # Outbound service hosts are explicitly allow-listed; add each new destination deliberately.
 ALLOWED_DOMAINS = {
     ORIGIN, "github.com", "google.com", "google.dev", "youtube.com", "priv.gc.ca", "ffmpeg.org",
-    "discord.gg", "spotify.com", "soundcloud.com", "jellyfin.org", "ollama.com", "openai.com",
+    "groups.google.com", "discord.gg", "spotify.com", "soundcloud.com", "jellyfin.org", "ollama.com", "openai.com",
     "openrouter.ai", "arena.ai", "anthropic.com",
 }
 LD_JSON = 'type="application/ld+json"'
@@ -88,7 +88,8 @@ def check():
         assert 'class="placeholder"' not in text, f"{label}: unresolved placeholder"
         assert "Draft" not in text and "draft" not in text, f"{label}: stale draft notice"
         assert "mailto:mob5824@proton.me" in text, f"{label}: contact missing"
-        assert "https://discord.gg/rZzbuEjXrg" in text, f"{label}: community help link missing"
+        assert "https://groups.google.com/u/1/g/soundtrail" in text, f"{label}: Google Groups support link missing"
+        assert "https://discord.gg/rZzbuEjXrg" in text, f"{label}: Discord support link missing"
         for href in page.links:
             url = urlsplit(href)
             if url.scheme == "mailto":
@@ -195,9 +196,10 @@ def check_disclosures():
     assert "TheAudioDB" in privacy, "tag lookups must be disclosed"
     assert "Android Auto" in privacy and "Android Auto" in app, "the car path must be disclosed"
     assert "MEDIA_CONTENT_CONTROL" in privacy, "the Android Auto caller allowlist must be stated"
-    assert "Discord help group" in privacy and "third-party platform" in privacy, \
-        "the privacy policy must identify Discord as a third-party support channel"
-    assert "Discord help group" in terms, "the terms must cover the Discord support channel"
+    assert "Google Groups support group" in privacy and "Discord help group" in privacy and "third-party platforms" in privacy, \
+        "the privacy policy must identify both community support platforms"
+    assert "Google Groups support group" in terms and "Discord help group" in terms, \
+        "the terms must cover both community support channels"
     assert "Android Auto" in terms and "Ollama" in terms and "Arena" in terms, \
         "the terms must cover car, speech, and model providers"
     assert "which you must follow" in terms and "Privacy Policy before sending a mood request" in terms, \
